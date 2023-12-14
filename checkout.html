@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://kit.fontawesome.com/faf6adbd82.js" crossorigin="anonymous"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <title>Оформление заказа</title>
+    <style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+  }
+  h2 {
+    text-align: center;
+    margin-top: 50px;
+    margin-bottom: 30px;
+    color: #333;
+  }
+  .cart-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #fff;
+    display: none;
+  }
+  .cart-content img {
+    max-width: 100px;
+    max-height: 100px;
+    margin-right: 20px;
+    display: none;
+  }    
+  #total {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 50px;
+    color: #333;
+  }
+  #total-price-value {
+    color: #ff6600;
+  }
+  .cart-quantity, .plus, .minus {
+    display: none;
+  }
+  
+  
+  
+  
+  
+  
+  h2 {
+    text-align: center;
+    color: #ff6600;
+    margin-top: 50px;
+  }
+  .cart-content {
+    padding: 20px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    margin: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 30px;
+  }
+  input {
+    width: 300px;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ff6600;
+    border-radius: 8px;
+    outline: none;
+  }
+  select {
+    width: 300px;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ff6600;
+    border-radius: 8px;
+    outline: none;
+  }
+  label {
+    margin-right: 10px;
+    color: #333333;
+  }
+  #total {
+    margin-top: 20px;
+    color: #ff6600;
+  }
+  button {
+    padding: 12px 20px;
+    background-color: #ff6600;
+    color: #ffffff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+  }
+  button:hover {
+    background-color: #e65c00;
+  }
+</style>
+  </head>
+  <body>
+    <h2>Оформлення замовлення</h2>
+    <div class="cart-content"></div>
+    <form id="order-form">
+     
+    
+    <div>
+    <input type="text" placeholder="Введіть своє ім'я" id="name">
+</div>
+    <div>
+        <input type="text" placeholder="Введіть своє прізвище" id="lastname">
+    </div>
+    <div>
+        <input type="number" placeholder="Введіть свій номер телефону" id="number">
+    </div>
+    <div>
+        <input type="text" placeholder="Введіть своє місто" id="city">
+    </div>
+    <div>
+        <input type="text" placeholder="Введіть індекс міста" id="indexCity">
+    </div>
+     <div>
+        <input type="text" placeholder="Введіть адресу відділення" id="streetVidilenya">
+    </div>
+    <div>
+        <input type="number" placeholder="Введіть номер віділення" id="numberVidilenya">
+    </div>
+ 
+    
+    
+    
+    
+     <p id="total">Разом: <span id="total-price-value">0</span></p>
+    <button type="submit">Підтвердити заказ</button>
+  </form>
+     
+
+<script src="js/config.js"></script>
+   <script>
+document.addEventListener("DOMContentLoaded", function() {
+  let cartContent = localStorage.getItem("cart");
+  let cartContentElement = document.querySelector(".cart-content");
+  if (cartContentElement && cartContent) {
+    // Разбиваем строку на отдельные продукты и отображаем их
+    const products = cartContent.split("|");
+    let productsList = "";
+    products.forEach((product, index) => {
+      if (index < products.length - 1) {
+        productsList += product + ", ";
+      } else {
+        productsList += product;
+      }
+    });
+    cartContentElement.innerHTML = "Товары в корзине: " + productsList;
+  }
+
+  const urlParams = new URLSearchParams(window.location.search);
+  const totalPrice = urlParams.get('totalPrice');
+  const totalPriceElement = document.getElementById("total-price-value");
+
+  if (totalPrice && totalPriceElement) {
+    totalPriceElement.innerText = totalPrice;
+  } else {
+    console.error("Общая сумма не найдена в параметрах URL или элемент с id 'total-price-value' не существует на странице");
+  }
+
+  // Получаем данные о продуктах из параметра URL "cart"
+  const cartFromURL = urlParams.get('cart');
+  if (cartFromURL) {
+    localStorage.setItem("cart", cartFromURL);
+  }
+
+  // Добавляем обработчик события submit для формы заказа
+  document.getElementById("order-form").addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    // Получаем данные о заказе
+    const nameInput = document.getElementById("name");
+    const lastnameInput = document.getElementById("lastname");
+    const numberInput = document.getElementById("number");
+    const cityInput = document.getElementById("city");
+    const indexCityInput = document.getElementById("indexCity");
+    const streetVidilenyaInput = document.getElementById("streetVidilenya");
+    const numberVidilenyaInput = document.getElementById("numberVidilenya");
+
+    if (nameInput.value && lastnameInput.value && numberInput.value && cityInput.value && indexCityInput.value && streetVidilenyaInput.value && numberVidilenyaInput.value) {
+      const orderData = {
+        name: nameInput.value,
+        lastname: lastnameInput.value,
+        number: numberInput.value,
+        city: cityInput.value,
+        indexCity: indexCityInput.value,
+        streetVidilenya: streetVidilenyaInput.value,
+        numberVidilenya: numberVidilenyaInput.value,
+        totalPrice: totalPrice
+      };
+
+      // Получаем данные о продуктах из корзины
+      const cartContent = localStorage.getItem("cart");
+      
+      if (cartContent) {
+        orderData.cartContent = cartContent;
+      }
+
+      const database = firebase.database();
+      const ordersRef = database.ref('orders');
+
+      // Отправка данных в базу данных
+      ordersRef.push(orderData)
+        .then(() => {
+          console.log('Заказ успешно добавлен в базу данных Firebase');
+        })
+        .catch((error) => {
+          console.error('Произошла ошибка при добавлении заказа в базу данных Firebase:', error);
+        });
+    } else {
+      console.error("Пожалуйста, заполните все поля формы");
+    }
+  });
+});
+</script>
+  </body>
+</html>

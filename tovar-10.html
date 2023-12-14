@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" type="text/css" href="index.css">
+	<script src="https://kit.fontawesome.com/faf6adbd82.js" crossorigin="anonymous"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://unpkg.com/boxicons@latest/css/boxicons.min.css">
+	<title></title>
+</head>
+<style>
+    .cont-good
+{
+  display: flex;
+  margin-top: 90px;
+  padding: 5px;  
+  border-radius: 10px;
+  flex-direction: column;
+  margin-bottom: 20px;
+  align-items: center;
+  height: 50%;
+  /*height: 100vh;*/  
+}
+.big-image img
+{
+  width: 350px;
+  height: 350px;
+  transition: all 0.3s ease;
+  object-fit: contain;
+  object-position: center;
+  background: white;
+  border-radius: 10px;
+}
+.small-images img
+{
+  width: 100px;
+  height: 100px;
+  margin: 10px;
+  cursor: pointer;
+  object-fit: contain;
+  object-position: center;
+  background: white;
+  border-radius: 10px;
+}
+.small-images img:hover
+{
+  transform: scale(1.1);
+}
+.product-info
+{
+  padding: 20px;
+}
+.roduct-info h2
+{
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 0px;
+}
+.product-info p
+{
+  font-size: 18px;
+  color: #ff6600;
+  margin-bottom: 10px;
+  justify-content: flex-start;
+}
+.product-info ul
+{
+  list-style: none;
+  padding: 0;
+}
+.product-info li
+{
+  font-size: 16px;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+#btn
+{
+  width: 90%; 
+  height: 45px;
+  padding: 10px;
+  border: 2px solid #588fa1; 
+  border-radius: 10px;
+}
+#btn:hover
+{
+  color:white;
+  background: #84b0bf;
+}
+
+.product-info
+{
+  width: 100%;
+  justify-content: flex-start;
+}
+#productName
+{
+  font-size: 18px;
+  color: #8c8e91;
+}
+#productMechanism
+{
+  font-size: 12px;
+  color: #e1e3e6;
+}
+
+#productDiscription {
+  font-size: 16px;
+  line-height: 1.5;
+  padding: 10px;
+  background-color: #f2f2f2;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  max-width: 500px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-wrap: break-word;
+}
+
+
+
+
+
+
+
+    @keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 100;
+  }
+}
+
+#prel {
+  animation: fadeIn 3s;
+}
+
+
+
+
+
+
+
+
+
+</style>
+<body>
+<div id="prel">    
+	<!-- header -->
+	<header>
+		<a href="index.html" class="logo">
+		    <i class="fa-solid fa-arrow-left"></i>
+		</a>
+		
+		<div class="header-icons">
+	<a><i class="bx bx-shopping-bag" id="icon-shop"></i></a>
+  </div>
+
+
+
+
+ <!-- shop -->
+            <div id="shopping">
+                <ul>
+         <hr class="closeBtn">
+         
+                <h3 class="cosh">Кошик</h3>
+                <!-- content -->
+                <div class="cart-content">
+                    
+                </div>
+                <!-- total -->
+                <div class="total">
+           <div class="total-price">Всього:</div>
+                 <div class="total-price"></div>
+                </div>
+                <!-- buy button -->
+                <button class="btn-buy" id="BuyNow">Перейти до оформлення</button>
+                
+    </ul>                             
+            </div>
+
+            
+            
+            
+            
+	</header>
+
+
+
+ 
+
+
+
+  
+<div class="cont-good">
+    <div class="big-image">
+    <img src="loading.png" id="productImage1" class="product-img">
+  </div>
+  <div class="small-images">
+    <img src="loading.png" alt="Small Image 1"
+      id="productImage2">
+      <img src="loading.png" alt="Small Image 2"
+      id="productImage3">
+      <img src="loading.png" alt="Small Image 3"
+      id="productImage4">
+  </div>
+
+  <div class="product-info">
+    <div style="display: flex; justify-content: center; align-items: center; margin-top: -5px;">
+        <h2 id="productName" class="product-title" style="font-size: 20px;"></h2>
+    </div>
+    <div style="margin-top: 15px; font-size: 18px; display: flex;margin-left: 10px;"> 
+        <span>Ціна:</span>
+      <p id="productPrice" class="price" style="margin-left: 5px;"></p><span style="margin-left: 2px; color:#ff6600;">грн</span>
+    
+    </div>
+   <ul>
+      <li id="productDiscription"></li>
+    </ul> 
+    </div>
+  <button class=" add-cart" id="btn">В кошик</button>
+</div>
+
+
+
+    <div id="model-window">
+       <img src="success.png" id="success" alt="">
+       <div id="message">
+           <h3>Товар успішно доданий!</h3>
+       </div>
+    </div>
+
+
+    <div id="model-window-error">
+       <div>
+           <h1 style="display: flex; justify-content : center; align-items: center; width: 30px; height : 30px; font-size: 32px; color: red; border: 3px solid red; border-radius: 50%; padding: 3px;">×</h1>
+       </div>
+       <div id="messageError">
+           <h3>Такий товар вже є!</h3>
+       </div>
+    </div>
+    
+    
+    
+    
+       
+   
+      
+      
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="reviews-goods">
+          
+          <div style="display: flex;">
+            <h5>Відгуки про цей товар
+               <span id="count-goods">0</span>
+            </h5>
+            <h5 style="text-align: flex-end; color: black;" id="dodaty-vidguk">Додати відгук</h5>
+           </div>
+          
+          
+          <div class="box-comments"></div>      
+
+
+</div>    
+
+
+
+
+
+
+
+
+<div id="comment-modal">
+            
+    <ul>
+         <hr class="closeBtnn">
+                       
+              <div class="modal-content">
+                <h3 class="cosh">Комент</h3>
+              </div>
+<div class="rating">
+  <span class="star" data-value="1">★</span>
+  <span class="star" data-value="2">★</span>
+  <span class="star" data-value="3">★</span>
+  <span class="star" data-value="4">★</span>
+  <span class="star" data-value="5">★</span>
+</div>
+ <br>
+    <br>
+    <textarea id="comment" rows="4" cols="50" placeholder="Напишіть коментар"></textarea>
+    <br>
+    <br>
+    <button type="button" id="sendComment" onclick="sendComment()">Отправить</button>
+  </form>
+
+                
+    </ul>
+  </div>
+
+
+
+
+
+<script src="click-shop.js"></script>
+<script src="shopp_bag.js"></script>
+<script src="next-click-img.js"></script>
+<script src="ratting.js"></script>
+<script src="config.js"></script>
+<script src="shopping-order.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  const database = firebase.database();
+  const urlParams = new URLSearchParams(window.location.search);
+  const productId = urlParams.get('id');
+
+  database.ref('product/classicKvartsovi/' + productId).once('value')
+   .then((snapshot) =>{
+    const product = snapshot.val();
+
+    const productName = document.getElementById('productName');
+    productName.textContent = product.name;
+
+    const productPrice = document.getElementById('productPrice');
+    productPrice.textContent =  product.price;
+
+    const productDiscription = document.getElementById('productDiscription');
+    productDiscription.textContent = product.description;
+
+    const productImage1 = document.getElementById('productImage1');
+    productImage1.src = product.photo1Url;
+    productImage1.alt = "Image";
+
+    const productImage2 = document.getElementById('productImage2');
+    productImage2.src = product.photo2Url;
+    productImage2.alt = "Image";
+
+    const productImage3 = document.getElementById('productImage3');
+    productImage3.src = product.photo3Url;
+    productImage3.alt = "Image";
+
+    const productImage4 = document.getElementById('productImage4');
+    productImage4.src = product.photo4Url;
+    productImage4.alt = "Image";
+   });
+   
+   
+   
+// Reference to the comments collection for the specific product
+var productCommentsRef = database.ref('comment/' + productId);
+
+// Create a Set to store unique comments
+var uniqueComments = new Set();
+
+// Retrieve comments for the specific product from the database
+productCommentsRef.on('value', function(snapshot) {
+  snapshot.forEach(function(childSnapshot) {
+    var comment = childSnapshot.val();
+    var rating = comment.rating;
+    var text = comment.comment;
+    
+    // Check if the comment is not already in the Set
+    if (!uniqueComments.has(text)) {
+      // Add the comment to the Set
+      uniqueComments.add(text);
+      
+      // Output the comment data to the HTML
+      var commentHtml = '<div class="bx-com">';
+      commentHtml += '<div class="ratting" style="margin-top: 5px; margin-bottom: 5px;">';
+      commentHtml += 'Рейтинг <span>(' + rating + ')</span>';
+      commentHtml += '</div>';
+      commentHtml += '<div class="comment">' + text + '</div>';
+      commentHtml += '</div>';
+
+      document.querySelector('.box-comments').innerHTML += commentHtml;
+    }
+  });
+});
+
+
+
+
+// Update the count of comments for the specific product in real time
+productCommentsRef.on('value', function(snapshot) {
+  var count = snapshot.numChildren();
+  document.getElementById('count-goods').innerText = count;
+});
+
+</script>
+
+
+
+</body>
+</html>
